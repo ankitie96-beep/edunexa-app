@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102d55">
+  <meta name="description" content="EduNexa School Management ERP">
+
+  <title>EduNexa ERP</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#071b3a,#1761a0);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      background: rgba(255,255,255,.10);
+      padding: 40px 25px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .logo {
+      width: 85px;
+      height: 85px;
+      margin-bottom: 15px;
+    }
+
+    h1 { font-size: 32px; margin: 10px 0; }
+    p { color: #d8e7f7; line-height: 1.6; }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      background: white;
+      color: #102d55;
+    }
+
+    .install { background: #35b6ed; color: white; }
+    footer { margin-top: 25px; font-size: 12px; color: #c5d8ed; }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <img src="icon.svg" class="logo" alt="EduNexa Logo">
+
+    <h1>EduNexa</h1>
+    <p>Smart School Management System</p>
+    <p>Welcome to EduNexa ERP Application.</p>
+
+    <button class="install" id="installBtn" hidden>
+      Install EduNexa App
+    </button>
+
+    <p id="installMessage">
+      Your EduNexa application is getting ready.
+    </p>
+
+    <footer>Powered by EduNexa ERP</footer>
+  </main>
+
+  <script>
+    let deferredPrompt;
+
+    const installBtn = document.getElementById("installBtn");
+    const message = document.getElementById("installMessage");
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredPrompt = event;
+      installBtn.hidden = false;
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.hidden = true;
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(() => {
+            message.textContent = "EduNexa App is ready.";
+          })
+          .catch(() => {
+            message.textContent = "App setup is in progress.";
+          });
+      });
+    }
+  </script>
+</body>
+</html>
